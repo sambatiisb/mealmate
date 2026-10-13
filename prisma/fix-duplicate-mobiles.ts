@@ -45,6 +45,12 @@ async function main() {
 
 main()
   .catch((e) => {
+    // P2021: table doesn't exist yet (fresh database) — nothing to fix;
+    // `prisma db push` creates the schema next.
+    if (e?.code === "P2021") {
+      console.log("users table not found (fresh database) — skipping duplicate fix.");
+      return;
+    }
     console.error(e);
     process.exit(1);
   })
