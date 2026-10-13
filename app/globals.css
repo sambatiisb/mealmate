@@ -1,0 +1,560 @@
+/* MealMate design system — near-black + lime, soft radii, Plus Jakarta Sans.
+   Sourced from MealMate Student App.dc.html (2026-07-29 revision). */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --color-bg: #ededea;
+  --color-surface: #ffffff;
+  --color-dark: #151515;
+  --color-text: #151515;
+  --color-muted: #7a7a75;
+  --color-muted-2: #c9c9c4;
+
+  --color-accent: #d8ff3d;
+  --color-accent-text: #151515;
+
+  --color-purple: #8b7dc0;
+  --color-purple-light: #b7a6f2;
+  --color-purple-pale-bg: #f1edff;
+  --color-purple-pale-text: #4a3f73;
+
+  --color-warning-bg: #fff3d6;
+  --color-warning-text: #6b5300;
+  --color-error: #c23b3b;
+
+  --color-row-bg: #f7f7f5;
+  --border-input: rgba(0, 0, 0, 0.12);
+  --border-hairline: rgba(0, 0, 0, 0.06);
+
+  --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  --radius-lg: 24px;
+  --radius-md: 20px;
+  --radius-btn: 12px;
+  --radius-chip: 10px;
+  --radius-sm: 8px;
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-body);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.3px;
+  margin: 0 0 var(--space-1);
+}
+
+h1 {
+  font-size: 32px;
+}
+h2 {
+  font-size: 24px;
+}
+h3 {
+  font-size: 20px;
+}
+h6 {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-purple);
+}
+
+p {
+  margin: 0 0 var(--space-3);
+}
+a {
+  color: var(--color-text);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--color-muted);
+}
+.text-muted {
+  color: var(--color-muted);
+}
+::selection {
+  background: var(--color-accent);
+  color: var(--color-accent-text);
+}
+:focus-visible {
+  outline: 2px solid var(--color-purple);
+  outline-offset: 2px;
+}
+
+.hr {
+  height: 1px;
+  border: 0;
+  margin: var(--space-4) 0;
+  background: var(--border-hairline);
+}
+
+/* — buttons — */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  border: none;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14.5px;
+  padding: 14px 22px;
+  border-radius: var(--radius-btn);
+  transition: opacity 0.15s;
+}
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.btn-primary {
+  background: var(--color-dark);
+  color: #fff;
+}
+.btn-primary:hover:not(:disabled) {
+  opacity: 0.88;
+}
+.btn-accent {
+  background: var(--color-accent);
+  color: var(--color-accent-text);
+}
+.btn-accent:hover:not(:disabled) {
+  opacity: 0.88;
+}
+.btn-secondary {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+.btn-secondary:hover:not(:disabled) {
+  background: #e2e2de;
+}
+.btn-ghost {
+  background: none;
+  color: var(--color-muted);
+  font-size: 13px;
+  padding: 8px 4px;
+}
+.btn-ghost:hover:not(:disabled) {
+  color: var(--color-text);
+}
+.btn-block {
+  width: 100%;
+}
+
+/* — forms — */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.field > label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+.input {
+  width: 100%;
+  padding: 13px 14px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--color-text);
+  background: #fff;
+  border: 1px solid var(--border-input);
+  border-radius: var(--radius-btn);
+}
+.input:focus-visible {
+  border-color: var(--color-purple);
+}
+textarea.input {
+  min-height: 90px;
+  resize: vertical;
+}
+
+/* — chip toggle (cuisine / dietary flags / food type) — */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 18px;
+  border-radius: var(--radius-chip);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+.chip[data-selected="true"] {
+  background: var(--color-dark);
+  color: #fff;
+}
+.chip-block {
+  display: flex;
+  width: 100%;
+  text-align: left;
+  padding: 16px 18px;
+  font-size: 15px;
+  font-weight: 700;
+}
+.chip-block input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.chip-block:has(input:checked) {
+  background: var(--color-dark);
+  color: #fff;
+}
+
+.day-toggle {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: var(--radius-chip);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid var(--border-input);
+}
+.day-toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.day-toggle-veg:has(input:checked) {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+.day-toggle-nonveg:has(input:checked) {
+  background: var(--color-dark);
+  color: #fff;
+  border-color: var(--color-dark);
+}
+
+/* — small tag (profile summary pills) — */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  background: var(--color-bg);
+  border-radius: var(--radius-sm);
+  padding: 5px 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+/* — cards — */
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-5) var(--space-6);
+  box-shadow: var(--shadow-card);
+}
+.card-dark {
+  background: var(--color-dark);
+  color: #fff;
+  border-radius: var(--radius-md);
+  padding: var(--space-5) var(--space-6);
+}
+.card-kicker {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-purple);
+}
+.card-title {
+  font-weight: 800;
+  font-size: 17px;
+}
+.card-body {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--color-muted);
+}
+
+.note-purple {
+  background: var(--color-purple-pale-bg);
+  color: var(--color-purple-pale-text);
+  border-radius: 14px;
+  padding: 14px 18px;
+  font-size: 13.5px;
+}
+.note-warning {
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  border-radius: 14px;
+  padding: 14px 18px;
+  font-size: 13.5px;
+}
+
+/* — toggle switch (skip meal) — */
+.toggle {
+  width: 46px;
+  height: 26px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  background: rgba(255, 255, 255, 0.15);
+  flex: none;
+}
+.toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.toggle[data-on="true"] {
+  background: var(--color-accent);
+}
+.toggle-knob {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  transition: left 0.15s;
+}
+.toggle[data-on="true"] .toggle-knob {
+  left: 23px;
+}
+
+/* — table (groceries) — */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.table td {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-hairline);
+  color: #3a3a38;
+}
+
+/* — dialog — */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100;
+}
+.dialog {
+  width: min(460px, 100%);
+  max-height: 85vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  background: #fff;
+}
+.dialog-title {
+  font-weight: 800;
+  font-size: 20px;
+}
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+/* — auth / onboarding shell (centered card, all viewport sizes) — */
+.auth-shell {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+}
+.auth-card {
+  width: 100%;
+  max-width: 460px;
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+@media (max-width: 480px) {
+  .auth-card {
+    padding: var(--space-6);
+  }
+}
+
+/* — responsive app shell: bottom nav on mobile, sidebar on desktop — */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+.app-nav {
+  background: var(--color-dark);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  gap: 2px;
+  padding: 10px 8px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+.app-nav-brand {
+  display: none;
+}
+.app-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border-radius: 14px;
+  padding: 6px 4px;
+  text-decoration: none;
+  flex: 1;
+}
+.app-nav-item[aria-current="page"] {
+  background: var(--color-accent);
+}
+.app-nav-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 13px;
+}
+.app-nav-item[aria-current="page"] .app-nav-icon {
+  background: var(--color-dark);
+  color: var(--color-accent);
+}
+.app-nav-label {
+  color: var(--color-muted-2);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+.app-nav-item[aria-current="page"] .app-nav-label {
+  color: var(--color-accent-text);
+}
+.app-content {
+  flex: 1;
+  padding: 20px 16px 96px;
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+@media (min-width: 768px) {
+  .app-shell {
+    flex-direction: row;
+  }
+  .app-nav {
+    position: relative;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 6px;
+    width: 220px;
+    padding: 24px 14px;
+    bottom: auto;
+    left: auto;
+    right: auto;
+  }
+  .app-nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 8px 28px;
+  }
+  .app-nav-brand-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--color-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: var(--color-dark);
+  }
+  .app-nav-brand-text {
+    color: #fff;
+    font-weight: 800;
+    font-size: 16px;
+  }
+  .app-nav-item {
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 10px 12px;
+    flex: none;
+  }
+  .app-content {
+    padding: 36px 40px;
+  }
+}
+
+/* — grids — */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-4);
+}
+.grid-dishes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-3);
+}

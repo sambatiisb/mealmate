@@ -1,0 +1,289 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum MemberStatus {
+  pending
+  accepted
+}
+
+enum FoodType {
+  veg
+  nonveg
+  egg
+}
+
+enum DishSource {
+  curated
+  custom
+}
+
+enum MenuStatus {
+  draft
+  pending
+  locked
+}
+
+enum Meal {
+  lunch
+  dinner
+}
+
+model User {
+  id               String   @id @default(cuid())
+  firstName        String
+  lastName         String
+  username         String   @unique
+  passwordHash     String?
+  mobileNumber     String   @unique
+  vegOnly          Boolean  @default(false)
+  vegOnlyConfirmed Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  quadMemberships   QuadMember[]
+  createdQuads      Quad[]             @relation("QuadCreator")
+  preferences       Preference[]
+  customDishesAdded Dish[]             @relation("DishAddedBy")
+  approvals         Approval[]
+  skips             Skip[]
+  mealStaples       MemberMealStaple[]
+  notifications     Notification[]
+
+  @@map("users")
+}
+
+model Quad {
+  id                   String   @id @default(cuid())
+  name                 String
+  inviteCode           String   @unique
+  createdBy            String
+  lunchCutoff          String   @default("08:00")
+  dinnerCutoff         String   @default("18:00")
+  cookingStyle         String?
+  defaultStaple        String?
+  defaultRotiQty       Int?
+  nonVegDays           Int[]    @default([])
+  invitedMobileNumbers String[] @default([])
+  createdAt            DateTime @default(now())
+
+  creator       User           @relation("QuadCreator", fields: [createdBy], references: [id])
+  members       QuadMember[]
+  preferences   Preference[]
+  dishes        Dish[]
+  menus         WeeklyMenu[]
+  notifications Notification[]
+
+  @@map("quads")
+}
+
+model QuadMember {
+  id       String       @id @default(cuid())
+  userId   String
+  quadId   String
+  status   MemberStatus @default(pending)
+  joinedAt DateTime     @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  quad Quad @relation(fields: [quadId], references: [id])
+
+  @@unique([userId, quadId])
+  @@map("quad_members")
+}
+
+model Preference {
+  id           String    @id @default(cuid())
+  userId       String
+  quadId       String
+  dietaryFlags String[]
+  completedAt  DateTime?
+  updatedAt    DateTime  @updatedAt
+
+  user   User             @relation(fields: [userId], references: [id])
+  quad   Quad             @relation(fields: [quadId], references: [id])
+  dishes PreferenceDish[]
+
+  @@unique([userId, quadId])
+  @@map("preferences")
+}
+
+model PreferenceDish {
+  id           String @id @default(cuid())
+  preferenceId String
+  dishId       String
+
+  preference Preference @relation(fields: [preferenceId], references: [id], onDelete: Cascade)
+  dish       Dish       @relation(fields: [dishId], references: [id])
+
+  @@unique([preferenceId, dishId])
+  @@map("preference_dishes")
+}
+
+model Dish {
+  id                String     @id @default(cuid())
+  name              String
+  cuisine           String
+  subcategory       String?
+  menuCategory      String?
+  dishType          String?
+  foodType          FoodType
+  isVeg             Boolean    @default(true)
+  containsEgg       Boolean    @default(false)
+  isProteinRich     Boolean    @default(false)
+  proteinSourceType String?
+  imageUrl          String
+  source            DishSource @default(curated)
+  quadId            String?
+  addedBy           String?
+  containsFlags     String[]
+  catalogId         String?    @unique
+
+  quad             Quad?            @relation(fields: [quadId], references: [id])
+  addedByUser      User?            @relation("DishAddedBy", fields: [addedBy], references: [id])
+  preferenceDishes PreferenceDish[]
+  menuItems        MenuItem[]       @relation("MenuItemDish")
+  priority1Items   MenuItem[]       @relation("MenuItemPriority1")
+  priority2Items   MenuItem[]       @relation("MenuItemPriority2")
+  companionItems   MenuItem[]       @relation("MenuItemCompanion")
+  dishIngredients  DishIngredient[]
+
+  @@map("dishes")
+}
+
+model Ingredient {
+  id                    String  @id @default(cuid())
+  catalogId             String  @unique
+  name                  String
+  category              String?
+  defaultUnit           String?
+  isPerishable          Boolean @default(false)
+  typicalQcAvailability String?
+  containsOnion         Boolean @default(false)
+  containsGarlic        Boolean @default(false)
+  containsDairy         Boolean @default(false)
+  containsGluten        Boolean @default(false)
+  containsNuts          Boolean @default(false)
+
+  dishIngredients DishIngredient[]
+
+  @@map("ingredients")
+}
+
+model DishIngredient {
+  id           String  @id @default(cuid())
+  dishId       String
+  ingredientId String
+  quantity     Float?
+  unit         String?
+  isOptional   Boolean @default(false)
+  seqInDish    Int?
+
+  dish       Dish       @relation(fields: [dishId], references: [id])
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+
+  @@unique([dishId, ingredientId])
+  @@map("dish_ingredients")
+}
+
+model WeeklyMenu {
+  id               String     @id @default(cuid())
+  quadId           String
+  weekStart        DateTime
+  status           MenuStatus @default(draft)
+  relaxedConsensus Boolean    @default(false)
+  approvalDeadline DateTime?
+  createdAt        DateTime   @default(now())
+
+  quad      Quad       @relation(fields: [quadId], references: [id])
+  items     MenuItem[]
+  approvals Approval[]
+
+  @@unique([quadId, weekStart])
+  @@map("weekly_menus")
+}
+
+model MenuItem {
+  id              String  @id @default(cuid())
+  menuId          String
+  day             Int
+  meal            Meal
+  dishId          String
+  companionDishId String?
+  priority1DishId String?
+  priority2DishId String?
+  template        String?
+  edited          Boolean @default(false)
+
+  menu          WeeklyMenu         @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  dish          Dish               @relation("MenuItemDish", fields: [dishId], references: [id])
+  companionDish Dish?              @relation("MenuItemCompanion", fields: [companionDishId], references: [id])
+  priority1Dish Dish?              @relation("MenuItemPriority1", fields: [priority1DishId], references: [id])
+  priority2Dish Dish?              @relation("MenuItemPriority2", fields: [priority2DishId], references: [id])
+  skips         Skip[]
+  mealStaples   MemberMealStaple[]
+
+  @@unique([menuId, day, meal])
+  @@map("menu_items")
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  quadId    String
+  type      String
+  message   String
+  createdAt DateTime  @default(now())
+  readAt    DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+  quad Quad @relation(fields: [quadId], references: [id])
+
+  @@index([userId, readAt])
+  @@map("notifications")
+}
+
+model MemberMealStaple {
+  id         String   @id @default(cuid())
+  userId     String
+  menuItemId String
+  staple     String
+  rotiQty    Int?
+  updatedAt  DateTime @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id])
+  menuItem MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, menuItemId])
+  @@map("member_meal_staples")
+}
+
+model Approval {
+  id          String   @id @default(cuid())
+  menuId      String
+  userId      String
+  approved    Boolean
+  respondedAt DateTime @default(now())
+
+  menu WeeklyMenu @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  user User       @relation(fields: [userId], references: [id])
+
+  @@unique([menuId, userId])
+  @@map("approvals")
+}
+
+model Skip {
+  id         String   @id @default(cuid())
+  userId     String
+  menuItemId String
+  skippedAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id])
+  menuItem MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, menuItemId])
+  @@map("skips")
+}
